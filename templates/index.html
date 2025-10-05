@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cosmic Tales — Welcome</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #0a1f4f 0%, #1a2a6c 100%);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle star background */
+    body::before {
+      content: "";
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: radial-gradient(#fff 1px, transparent 1px) repeat;
+      background-size: 2px 2px;
+      z-index: -2;
+      animation: stars 60s linear infinite;
+      opacity: 0.1;
+    }
+    @keyframes stars { from {background-position:0 0;} to {background-position:10000px 10000px;} }
+
+    /* Welcome container */
+    .welcome-box {
+      background: rgba(10,30,80,0.95);
+      padding: 3rem 2rem;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
+
+    .welcome-box h1 {
+      font-size: 2.5rem;
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-box p {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      margin: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .btn-login {
+      background: #ffd700;
+      color: #1b2a5c;
+    }
+    .btn-login:hover { background: #ffea70; transform: scale(1.05); }
+
+    .btn-signup {
+      background: #ff4b4b;
+      color: #fff;
+    }
+    .btn-signup:hover { background: #e03f3f; transform: scale(1.05); }
+
+    /* Responsive */
+    @media(max-width:600px){
+      .welcome-box h1 { font-size: 2rem; }
+      .welcome-box p { font-size: 1rem; }
+      .btn { font-size: 1rem; padding: 0.7rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="welcome-box">
+    <h1>Welcome to Cosmic Tales 🌌</h1>
+    <p>Embark on an interactive adventure to explore space weather and see how it affects our characters. Start your journey now!</p>
+    <a href="/login" class="btn btn-login">Login</a>
+    <a href="/signup" class="btn btn-signup">Sign Up</a>
+  </div>
+
+</body>
+</html>

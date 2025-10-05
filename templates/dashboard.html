@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cosmic Tales — Interactive Story</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:radial-gradient(circle at top,#0a1f4f 0%,#1a2a6c 100%);
+  color:#fff;display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;overflow-x:hidden;position:relative;
+}
+body::before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:100%;
+  background:radial-gradient(#fff 1px,transparent 1px) repeat;
+  background-size:2px 2px;animation:stars 60s linear infinite;opacity:0.15;z-index:-2;
+}
+@keyframes stars{from{background-position:0 0;}to{background-position:10000px 10000px;}}
+
+header{
+  width:100%;max-width:1000px;margin:1.5rem auto 2rem auto;padding:1rem 2rem;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:rgba(10,30,80,0.95);border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.6);position:relative;
+}
+header h1{font-size:2rem;font-weight:bold;color:#ffd700;margin-bottom:.8rem;}
+#logoutBtn{
+  position:absolute;top:1rem;right:2rem;padding:.6rem 1.4rem;font-size:1rem;
+  color:#fff;background:#ff4b4b;border:none;border-radius:8px;cursor:pointer;
+  transition:.3s;
+}
+#logoutBtn:hover{background:#e03f3f;transform:scale(1.05);}
+#storyText{width:100%;text-align:center;font-size:1.2rem;color:#ffd700;margin-top:.5rem;}
+
+.flip-container{position:relative;width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;}
+#flipbook{
+  display:flex;flex-wrap:nowrap;overflow-x:auto;gap:2rem;width:100%;
+  padding:2rem 0;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;z-index:1;
+}
+#flipbook::-webkit-scrollbar{display:none;}
+.page{
+  flex:0 0 auto;scroll-snap-align:center;width:260px;height:360px;
+  background:linear-gradient(145deg,#2e3f7a,#1b2a5c);border-radius:25px;
+  padding:1rem;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;position:relative;box-shadow:0 8px 25px rgba(0,0,0,.6),
+  0 0 20px rgba(255,215,0,.2);transition:.4s;cursor:pointer;
+}
+.page:hover{transform:rotateY(10deg) translateY(-10px) scale(1.08);
+  box-shadow:0 15px 35px rgba(0,0,0,.7),0 0 30px rgba(255,215,0,.5);}
+.character{font-weight:bold;color:#ffd700;font-size:1.2rem;margin-bottom:.8rem;}
+.story{font-size:1rem;color:#fff;margin-top:.5rem;}
+
+/* Sunny story container */
+#sunnyStory{
+  display:none;flex-direction:column;align-items:center;justify-content:flex-start;
+  width:100%;max-width:800px;min-height:400px;background:rgba(10,30,80,.95);
+  border-radius:20px;padding:2rem;box-shadow:0 8px 25px rgba(0,0,0,.6);
+  margin-top:1.5rem;position:relative;cursor:pointer;
+  overflow:hidden;
+}
+#sunnyText{
+  font-size:1.4rem;color:#ffd700;text-align:center;min-height:150px;margin-bottom:.5rem;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  position:relative;
+}
+#sunnyText.wiggle{animation:wiggleText 0.8s ease-in-out;}
+@keyframes wiggleText{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-5px);}
+  50%{transform:translateX(5px);}
+  75%{transform:translateX(-5px);}
+  100%{transform:translateX(0);}
+}
+
+#sunnyStory { width:100%; max-width:800px; min-height:400px; padding:2rem; }
+
+/* Flare trail and 3D animated trails */
+#flareTrail{
+  position:relative;width:100%;height:150px;margin-top:1rem;overflow:hidden;
+}
+.trail{
+  position:absolute;width:40px;height:40px;
+  background:radial-gradient(circle,#ffd700,#ff6600);
+  border-radius:50%;
+  top:50%; left:-50px;
+  transform:translateY(-50%);
+  opacity:0.8;
+  animation-name:flareMove;
+  animation-timing-function:linear;
+  animation-iteration-count:infinite;
+}
+@keyframes flareMove{
+  0%   { left:-50px; transform:translateY(var(--y,0%)) rotateY(var(--r,0deg)) scale(var(--s,1)); opacity:0.6; }
+  25%  { left:25%; transform:translateY(var(--y25,0%)) rotateY(var(--r25,10deg)) scale(var(--s25,1.1)); opacity:0.8; }
+  50%  { left:50%; transform:translateY(var(--y50,0%)) rotateY(var(--r50,0deg)) scale(var(--s50,1.2)); opacity:1; }
+  75%  { left:75%; transform:translateY(var(--y75,0%)) rotateY(var(--r75,-10deg)) scale(var(--s75,1.1)); opacity:0.8; }
+  100% { left:100%; transform:translateY(var(--y100,0%)) rotateY(var(--r100,0deg)) scale(var(--s100,1)); opacity:0; }
+}
+
+#closeSunny{position:absolute;top:10px;right:15px;background:#ff4b4b;border:none;color:white;font-size:1rem;padding:5px 10px;border-radius:5px;cursor:pointer;}
+#closeSunny:hover{background:#e03f3f;}
+#bigFlare{position:absolute;top:50%;left:0;width:60px;height:60px;background:radial-gradient(circle,#ffd700,#ff6600);border-radius:50%;transform:translateY(-50%);z-index:5;pointer-events:none;display:none;}
+@keyframes bigFlarePass{0%{left:0; opacity:1;}100%{left:calc(100% - 60px); opacity:0;}}
+
+/* Curved flare for page 4 */
+#curvedFlare{
+  position:absolute;
+  width:50px;
+  height:50px;
+  background:radial-gradient(circle,#ffd700,#ff4500);
+  border-radius:50%;
+  top:30px;
+  left:0;
+  z-index:6;
+  display:none;
+  pointer-events:none;
+  animation:none;
+}
+@keyframes flareCurve{
+  0%{transform:translate(0,0);}
+  20%{transform:translate(100px,20px);}
+  40%{transform:translate(220px,-15px);}
+  60%{transform:translate(340px,25px);}
+  80%{transform:translate(460px,-10px);}
+  100%{transform:translate(580px,15px);}
+}
+
+/* Arrows */
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.5rem;color:#ffd700;transition:.3s;z-index:2;}
+.arrow:hover{background:rgba(255,255,255,.4);}
+.arrow-left{left:-20px;}
+.arrow-right{right:-20px;}
+
+/* Rays */
+#raysContainer{position:relative;display:none;justify-content:center;align-items:center;margin-top:20px;width:160px;height:160px;}
+.ray{position:absolute;width:6px;height:70px;background:linear-gradient(to top,#ffd700 0%,#fff9c6 85%);top:50%;left:50%;transform-origin:center -15px;border-radius:3px;opacity:0.9;animation:rayWave 2.6s ease-in-out infinite;}
+@keyframes rayWave{0%,100%{transform:rotate(var(--angle)) scaleY(1);opacity:.75;}50%{transform:rotate(var(--angle)) scaleY(1.25);opacity:1;}}
+.ray.sparkle{animation:raySparkle 1.5s ease-in-out infinite alternate;}
+@keyframes raySparkle{0%{opacity:0.5; transform:rotate(var(--angle)) scaleY(1);}50%{opacity:1; transform:rotate(var(--angle)) scaleY(1.5);}100%{opacity:0.5; transform:rotate(var(--angle)) scaleY(1);}}
+
+/* Satellites */
+#satelliteContainer{position:relative;display:none;justify-content:center;align-items:center;width:100%;margin-top:20px;}
+.satellite{font-size:2rem;margin:0 1rem;display:inline-block;animation:wobble 1.5s infinite ease-in-out;}
+@keyframes wobble{0%{transform:rotate(0deg);}25%{transform:rotate(5deg);}50%{transform:rotate(-5deg);}75%{transform:rotate(5deg);}100%{transform:rotate(0deg);}}
+
+/* Fun Fact Pop-up */
+#funFact{display:none;position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(255,215,0,0.95);color:#1a2a6c;padding:1rem 1.5rem;border-radius:15px;box-shadow:0 8px 25px rgba(0,0,0,.6);font-weight:bold;font-size:1.1rem;text-align:center;max-width:80%;z-index:10;opacity:0;transition:opacity 1s ease;}
+
+/* Drag-and-drop game */
+#dragGame{display:none;width:100%; max-width:700px;margin-top:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;height:200px;background:rgba(255,255,255,0.05);border-radius:15px;padding:1rem;}
+.draggable{font-size:2rem;margin:1rem;cursor:grab;z-index:5;position:relative;}
+#dropZone{width:300px;height:80px;background:rgba(255,255,255,0.1);border:2px dashed #ffd700;border-radius:15px;display:flex;align-items:center;justify-content:center;color:#ffd700;font-weight:bold;margin-top:1rem;text-align:center;z-index:5;}
+#dropZone.hovered{background:rgba(255,215,0,0.3);}
+#dropZone.success{background:limegreen;color:#1a2a6c;}
+#dropZone.missed{background:red;color:#fff;}
+#animatedFlare{position:absolute;top:50%;left:10px;width:25px;height:25px;background:radial-gradient(circle,#ffd700,#ff6600);border-radius:50%;transform:translateY(-50%);animation:none;z-index:3;}
+
+/* Other characters story popup */
+#charStory{
+  display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(10,30,80,0.95);padding:2rem;border-radius:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.7);max-width:600px;text-align:center;z-index:20;
+}
+#closeChar{position:absolute;top:10px;right:15px;background:#ff4b4b;border:none;color:white;font-size:1rem;padding:5px 10px;border-radius:5px;cursor:pointer;}
+#closeChar:hover{background:#e03f3f;}
+
+@media(max-width:600px){
+  header{padding:1rem;}
+  #storyText{font-size:1.1rem;}
+  .page{width:200px;height:280px;}
+  .arrow{display:none;}
+  #logoutBtn{top:.8rem;right:1rem;}
+  #sunnyStory{padding:1rem;}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cosmic Tales 🌌</h1>
+  <div id="storyText">Click a character to see how space weather affects them!</div>
+  <button id="logoutBtn">Logout</button>
+</header>
+
+<div class="flip-container">
+  <div class="arrow arrow-left">&#8592;</div>
+  <div id="flipbook">
+    <div class="page" data-character="sunny">
+      <div class="character">🌞 Sun</div>
+      <div class="story">Sunny the Sun – cheerful but sometimes sneezes solar flares!</div>
+    </div>
+    <div class="page" data-character="farmer">
+        <h3>👨‍🌾 Farmer </h3>
+        <p>Farmer Ravi – works hard on crops and relies on the Sun. Space weather can affect irrigation and GPS.</p>
+    </div>
+
+    <div class="page" data-character="grid">
+      <div class="character">✈️ Pilot Ana</div>
+      <div class="story">Pilot Ana – affected by solar flares and weather.</div>
+    </div>
+  </div>
+  <div class="arrow arrow-right">&#8594;</div>
+</div>
+
+<!-- Sunny Story Container -->
+<div id="sunnyStory">
+  <button id="closeSunny">Close ✖</button>
+  <div id="sunnyText"></div>
+  <div id="bigFlare"></div>
+  <div id="flareTrail"></div>
+  <div id="curvedFlare"></div>
+  <div id="raysContainer"></div>
+  <div id="satelliteContainer"></div>
+  <div id="funFact">Solar flares are bursts of radiation from the Sun.</div>
+  <div id="dragGame">
+    <div>Drag a shield to block the flare!</div>
+    <div class="draggable" draggable="true">🛡️</div>
+    <div id="dropZone">Drop here to block!</div>
+    <div id="animatedFlare"></div>
+  </div>
+</div>
+
+<!-- Other Characters Story Container -->
+<div id="charStory">
+  <button id="closeChar">Close ✖</button>
+  <h2 id="charTitle"></h2>
+  <p id="charText"></p>
+</div>
+
+<audio id="sneezeAudio" src="{{ url_for('static', filename='audio/sneeze.mp3') }}"></audio>
+<audio id="wiggleAudio" src="{{ url_for('static', filename='audio/wiggle.mp3') }}"></audio>
+
+<script>
+// Scroll arrows
+const flipbook=document.getElementById('flipbook');
+const pageWidth=flipbook.querySelector('.page').offsetWidth+32;
+document.querySelector('.arrow-left').onclick=()=>flipbook.scrollBy({left:-pageWidth,behavior:'smooth'});
+document.querySelector('.arrow-right').onclick=()=>flipbook.scrollBy({left:pageWidth,behavior:'smooth'});
+
+// Sunny story logic (kept exactly as is)
+const sunnyPages=[{heading:'Meet Sunny',text:"Hello, I’m Sunny! I shine every day to make Earth warm and happy. But sometimes… ACHOO! I sneeze big solar flares!",sneeze:true},{heading:'Sunny Stretches',text:"Before I sneeze, I like to stretch my rays.",rays:true,wiggleSound:true,smallBox:true},{heading:'Solar Flare Launch',text:"Here it comes! Zoom! My flare travels millions of miles to Earth!",flare:true},{heading:'Effects on Earth',text:"Hmm… it looks like my sneeze is reaching satellites and devices. Oh no!",satellite:true},{heading:'Sunny Explains',text:"I’m not mean! Flares are just bursts of energy. Scientists study me to keep everyone safe."},{heading:'Fun Mini-Game',text:"Can you help me sneeze safely? Drag shields or auroras to block flares before they hit Earth!",dragGame:true},{heading:'Goodbye Sunny',text:"Thanks for helping me today! Remember, I shine bright every day and sometimes surprise everyone with a sneeze!",rays:true}];
+let currentSunny=0;
+const sunnyContainer=document.getElementById('sunnyStory');
+const sunnyText=document.getElementById('sunnyText');
+const bigFlare=document.getElementById('bigFlare');
+const raysContainer=document.getElementById('raysContainer');
+const flareTrail=document.getElementById('flareTrail');
+const satelliteContainer=document.getElementById('satelliteContainer');
+const funFact=document.getElementById('funFact');
+const dragGame=document.getElementById('dragGame');
+const draggable=document.querySelector('#dragGame .draggable');
+const dropZone=document.getElementById('dropZone');
+const animatedFlare=document.getElementById('animatedFlare');
+const sneezeAudio=document.getElementById('sneezeAudio');
+const wiggleAudio=document.getElementById('wiggleAudio');
+const curvedFlare=document.getElementById('curvedFlare');
+
+function generateRays(){raysContainer.innerHTML='';for(let i=0;i<8;i++){const ray=document.createElement('div');ray.className='ray';ray.style.setProperty('--angle',i*45+'deg');raysContainer.appendChild(ray);}}
+function resetDragGame(){dropZone.className='';dropZone.textContent='Drop here to block!';animatedFlare.style.transition='none';animatedFlare.style.left='10px';}
+function startFlareAnimation(){resetDragGame();setTimeout(()=>{const endX=dropZone.offsetLeft+dropZone.offsetWidth/2-12;animatedFlare.style.transition='left 3s linear';animatedFlare.style.left=endX+'px';setTimeout(()=>{if(!dropZone.classList.contains('success')){dropZone.classList.add('missed');dropZone.textContent='Missed! ❌';}},3000);},50);}
+draggable.addEventListener('dragstart', e=>{e.dataTransfer.setData('text/plain','shield');});
+dropZone.addEventListener('dragover', e=>{e.preventDefault(); dropZone.classList.add('hovered');});
+dropZone.addEventListener('dragleave', e=>{dropZone.classList.remove('hovered');});
+dropZone.addEventListener('drop', e=>{e.preventDefault(); dropZone.classList.remove('hovered'); const data=e.dataTransfer.getData('text'); if(data==='shield'){dropZone.classList.add('success'); dropZone.textContent='Blocked! ✅'; animatedFlare.style.transition='none'; animatedFlare.style.left=animatedFlare.offsetLeft+'px';}});
+
+function speakText(text,options={}){if('speechSynthesis' in window){speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);utter.lang='en-US';const voices = speechSynthesis.getVoices();const femaleVoice = voices.find(v=>v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha'));if(femaleVoice) utter.voice = femaleVoice;utter.pitch = 1.2;utter.rate = 0.9;if(options.sneeze){utter.onboundary = function(event){if(event.name==='word' && text.substr(event.charIndex,5)==='ACHOO'){sneezeAudio.currentTime=0;sneezeAudio.play();bigFlare.style.display='block';bigFlare.style.animation='bigFlarePass 2s linear forwards';setTimeout(()=>{ bigFlare.style.display='none'; },2000);}};} if(options.wiggleSound){utter.onend = function(){wiggleAudio.currentTime=0;wiggleAudio.play();sunnyText.classList.add('wiggle');};} speechSynthesis.speak(utter);}}
+
+function startCurvedFlare(){curvedFlare.style.display='block';curvedFlare.style.animation='flareCurve 3s ease-in-out forwards';setTimeout(()=>{curvedFlare.style.display='none';curvedFlare.style.animation='none';},3000);}
+
+function showSunnyPage(i){
+  currentSunny=i;
+  const p=sunnyPages[i];
+  sunnyText.innerHTML=`<h2>${p.heading}</h2><p>${p.text}</p>`;
+  raysContainer.style.display=p.rays?'flex':'none';
+  flareTrail.innerHTML='';
+  satelliteContainer.style.display='none';
+  satelliteContainer.innerHTML='';
+  funFact.style.display='none';
+  funFact.style.opacity=0;
+  dragGame.style.display='none';
+  dropZone.className='';
+  sunnyText.classList.remove('wiggle');
+  sunnyContainer.classList.remove('smallBox');
+
+  if(i===sunnyPages.length-1) sunnyContainer.classList.add('wavePage');
+  else sunnyContainer.classList.remove('wavePage');
+
+  if(p.smallBox) sunnyContainer.classList.add('smallBox');
+
+  if(p.rays){generateRays();if(i===sunnyPages.length-1){raysContainer.querySelectorAll('.ray').forEach(r=>r.classList.add('sparkle'));}}
+
+  if(p.flare){for(let j=0;j<5;j++){const t=document.createElement('div');t.className='trail';const topPerc=Math.random()*40-20;const r=Math.random()*20-10;const s=0.8+Math.random()*0.4;t.style.setProperty('--y', topPerc+'%');t.style.setProperty('--r', r+'deg');t.style.setProperty('--s', s);t.style.animationDuration=(3+Math.random()*2)+'s';flareTrail.appendChild(t);}}
+
+  if(p.satellite){
+    satelliteContainer.style.display='flex';
+    satelliteContainer.innerHTML=''; // clear previous satellites
+    for(let k=0;k<4;k++){
+      const s=document.createElement('div');
+      s.className='satellite';
+      s.textContent='🛰️';
+      satelliteContainer.appendChild(s);
+    }
+    if(currentSunny===3){startCurvedFlare();}
+  }
+
+  if(i===4){funFact.style.display='block'; setTimeout(()=>funFact.style.opacity=1,100);}
+  if(p.dragGame){dragGame.style.display='flex';resetDragGame();startFlareAnimation();}
+  speakText(p.text,{sneeze:p.sneeze,wiggleSound:p.wiggleSound});
+}
+
+// Sunny click
+document.querySelector('[data-character="sunny"]').onclick=()=>{
+  document.querySelector('.flip-container').style.display='none';
+  sunnyContainer.style.display='flex';
+  showSunnyPage(0);
+};
+sunnyContainer.onclick=e=>{
+  const rect=sunnyContainer.getBoundingClientRect();
+  if(e.target.id==='closeSunny')return;
+  if(e.clientX<rect.width/2 && currentSunny>0) showSunnyPage(currentSunny-1);
+  else if(e.clientX>=rect.width/2 && currentSunny<sunnyPages.length-1) showSunnyPage(currentSunny+1);
+  else if(currentSunny===sunnyPages.length-1){
+    sunnyContainer.style.display='none';
+    document.querySelector('.flip-container').style.display='flex';
+    speechSynthesis.cancel();
+    raysContainer.style.display='none';
+    flareTrail.innerHTML='';
+    satelliteContainer.style.display='none';
+    satelliteContainer.innerHTML='';
+    funFact.style.display='none';
+    dragGame.style.display='none';
+  }
+};
+document.getElementById('closeSunny').onclick=()=>{
+  sunnyContainer.style.display='none';
+  document.querySelector('.flip-container').style.display='flex';
+  speechSynthesis.cancel();
+  raysContainer.style.display='none';
+  flareTrail.innerHTML='';
+  satelliteContainer.style.display='none';
+  satelliteContainer.innerHTML='';
+  funFact.style.display='none';
+  dragGame.style.display='none';
+};
+
+// Other Characters logic
+const charStory=document.getElementById('charStory');
+const charTitle=document.getElementById('charTitle');
+const charText=document.getElementById('charText');
+document.getElementById('closeChar').onclick=()=>{charStory.style.display='none';document.querySelector('.flip-container').style.display='flex';};
+
+const charactersData={
+  farmer:{title:"👨‍🌾 Farmer ",text:"Farmer Ravi – works hard on crops and relies on the Sun. Space weather can affect irrigation and GPS."},
+  public:{title:"Public 👨‍👩‍👧‍👦",text:"Public – everyday life can be impacted by space weather. Communications, satellites, and navigation are affected."}
+};
+
+document.querySelectorAll('[data-character]').forEach(el=>{
+  if(el.dataset.character!=='sunny'){
+    el.onclick=()=>{
+      document.querySelector('.flip-container').style.display='none';
+      const data=charactersData[el.dataset.character];
+      charTitle.textContent=data.title;
+      charText.textContent=data.text;
+      charStory.style.display='block';
+    };
+  }
+});
+
+document.querySelectorAll('[data-character="farmer"]').forEach(el => {
+  el.onclick = () => {
+    window.location.href = "{{ url_for('farmer') }}";
+  };
+});
+
+document.querySelectorAll('[data-character="grid"]').forEach(el => {
+  el.onclick = () => {
+    window.location.href = "/pilot";
+  };
+});
+
+// Logout
+document.getElementById('logoutBtn').onclick=()=>{fetch('/logout',{method:'POST'}).then(()=>window.location.href='/');};
+</script>
+</body>
+</html>

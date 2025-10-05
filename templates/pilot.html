@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Ana’s Sky Adventure ✈️</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top, #0a1f4f 0%, #1a2a6c 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    width: 100%;
+    max-width: 900px;
+    margin: 1rem auto;
+    text-align: center;
+    background: rgba(10,30,80,0.95);
+    padding: 1rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    position: relative;
+  }
+  header h1 {
+    font-size: 2rem;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+  }
+  #storyText {
+    font-size: 1.2rem;
+    color: #ffd700;
+  }
+  #closeBtn {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 1rem;
+    color: #fff;
+    background: #ff4b4b;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  #closeBtn:hover { background: #e03f3f; }
+
+  .flip-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 1rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #storyContainer {
+    width: 100%;
+    background: rgba(10,30,80,0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    position: relative;
+    text-align: center;
+    min-height: 450px;
+    overflow: hidden;
+  }
+
+  .storyPage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.5s ease;
+    position: relative;
+    min-height: 400px;
+  }
+  .storyPage.active { display: flex; }
+
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+  .characterName {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+  }
+  .storyText {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Clouds and Plane (Page 1 only) */
+  .clouds-container { position: absolute; width: 100%; height: 100%; z-index: 2; }
+  .cloud { position: absolute; font-size: 10rem; opacity: 0.9; }
+  .plane-emoji { font-size: 4rem; position: absolute; top: 50%; left: -100px; animation: flyThrough 12s linear infinite; z-index: 4; }
+  @keyframes flyThrough { 0% {left:-100px; transform:translateY(0);} 25%{transform:translateY(-30px);} 50%{transform:translateY(20px);} 75%{transform:translateY(-10px);} 100%{left:1200px; transform:translateY(0);} }
+
+  /* Page 2: Antenna Flicker and Sparks */
+  .signal-antenna { font-size:5rem; position:absolute; bottom:50px; left:50%; transform:translateX(-50%); animation:wiggle 0.8s infinite; z-index:3; display:flex; align-items:center; gap:0.5rem; }
+  .low-text { font-size:2rem; color:yellow; font-weight:bold; animation:pop 0.6s ease-in-out infinite alternate; }
+  @keyframes wiggle {0%{transform:translateX(0) translateY(0) rotate(0deg);}15%{transform:translateX(-5px) translateY(-5px) rotate(-10deg);}30%{transform:translateX(5px) translateY(3px) rotate(10deg);}45%{transform:translateX(-3px) translateY(-2px) rotate(-5deg);}60%{transform:translateX(3px) translateY(2px) rotate(5deg);}75%{transform:translateX(-2px) translateY(1px) rotate(-2deg);}100%{transform:translateX(0) translateY(0) rotate(0deg);} }
+  @keyframes pop {0%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.3);opacity:1;}100%{transform:scale(1);opacity:0.6;} }
+  .spark { position:absolute; font-size:3rem; color:yellow; animation:flicker 0.5s infinite alternate; }
+  @keyframes flicker {0%{opacity:1;transform:translate(0,0);}25%{opacity:0.5;transform:translate(-2px,2px);}50%{opacity:0.8;transform:translate(2px,-2px);}75%{opacity:0.6;transform:translate(-1px,1px);}100%{opacity:1;transform:translate(0,0);} }
+
+  /* Page 3 Sparks Animation */
+  .satellite { position: absolute; font-size:5rem; }
+
+  /* Landing Game & Book */
+  .book-emoji { font-size: 5rem; cursor:pointer; animation: bookBounce 1.5s infinite; }
+  @keyframes bookBounce { 0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);} }
+  .fact-popup { position:absolute; top:100px; left:50%; transform:translateX(-50%); background:rgba(255,255,0,0.9); color:#000; padding:1rem 2rem; border-radius:15px; font-weight:bold; display:none; z-index:10; }
+
+  /* Page 5: Connect Signals Game */
+  #signalGame { position:relative; width:100%; height:250px; border:2px dashed #ffd700; border-radius:15px; margin-top:20px; }
+  .signal { position:absolute; font-size:3rem; cursor:pointer; }
+  #tower { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); font-size:5rem; }
+  #successMsg { position:absolute; top:20px; left:50%; transform:translateX(-50%); font-size:1.5rem; color:#00ff00; display:none; font-weight:bold; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pilot Ana’s Sky Adventure ✈️</h1>
+  <div id="storyText">Click a page to interact!</div>
+  <button id="closeBtn">Close</button>
+</header>
+
+<div class="flip-container">
+  <div id="storyContainer">
+
+    <!-- Page 1: Flight through clouds -->
+    <div class="storyPage active" data-page="1">
+      <div class="characterName">Meet Pilot Ana ✈️</div>
+      <div class="storyText">“Hi! I’m Pilot Ana. Flying above the clouds is thrilling!”</div>
+      <div class="clouds-container">
+        <div class="cloud" style="top:40px; left:50px;">☁️</div>
+        <div class="cloud" style="top:120px; left:200px;">☁️</div>
+        <div class="cloud" style="top:200px; left:400px;">☁️</div>
+        <div class="cloud" style="top:80px; left:600px;">☁️</div>
+        <div class="cloud" style="top:220px; left:750px;">☁️</div>
+      </div>
+      <div class="plane-emoji">✈️</div>
+    </div>
+
+    <!-- Page 2: Solar Flare Alert -->
+    <div class="storyPage" data-page="2">
+      <div class="characterName">Solar Flare Alert</div>
+      <div class="storyText">“Oh no! My radio crackles. Communication with the tower is weak!”</div>
+      <div class="signal-antenna">📡 <span class="low-text">LOW</span></div>
+      <div class="spark" style="top:100px; left:60%;">⚡</div>
+      <div class="spark" style="top:140px; left:40%;">⚡</div>
+    </div>
+
+    <!-- Page 3: Using Backup Systems -->
+    <div class="storyPage" data-page="3">
+      <div class="characterName">Backup Systems</div>
+      <div class="storyText">“I have backup systems, but I need to be careful. Solar flares can cause problems at high altitudes.”</div>
+      <div class="satellite" style="top:50px; left:150px;">🛰️</div>
+      <div class="satellite" style="top:100px; left:400px;">🛰️</div>
+      <div class="satellite" style="top:50px; left:650px;">🛰️</div>
+      <div class="spark" style="top:30px; left:170px;">⚡</div>
+      <div class="spark" style="top:70px; left:420px;">⚡</div>
+      <div class="spark" style="top:40px; left:670px;">⚡</div>
+    </div>
+
+    <!-- Page 4: Landing Game (Static) -->
+    <div class="storyPage" data-page="4">
+      <div class="characterName">Explaining the Danger</div>
+      <div class="storyText">“Pilots must know about space weather. It affects radios and navigation instruments.”</div>
+      <div id="landingZone" style="position:relative; width:100%; height:250px; margin-top:20px; border:2px dashed #ffd700; border-radius:15px;">
+        <div style="position:absolute; top:100px; left:50%; transform:translateX(-50%); font-size:4rem;">🎯</div>
+        <div style="position:absolute; top:150px; left:50%; transform:translateX(-50%); font-size:5rem;">✈️</div>
+      </div>
+    </div>
+
+    <!-- Page 5: Connect Signals Game -->
+    <div class="storyPage" data-page="5">
+      <div class="characterName">Helping Kids Learn</div>
+      <div class="storyText">“Can you help me restore communication? Match the signals to the tower!”</div>
+      <div id="signalGame">
+        <div id="signal1" class="signal" style="top:20px; left:20px;">📡</div>
+        <div id="signal2" class="signal" style="top:60px; left:100px;">📡</div>
+        <div id="signal3" class="signal" style="top:120px; left:200px;">📡</div>
+        <div id="tower">🗼</div>
+        <div id="successMsg">Communication Restored ✅</div>
+      </div>
+    </div>
+
+    <!-- Page 6: Happy Landing -->
+    <div class="storyPage" data-page="6">
+      <div class="characterName">Safe Landing</div>
+      <div class="storyText">“All done! Solar storm passed, and we landed safely. Thanks for helping me!”</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const pages = document.querySelectorAll('.storyPage');
+let currentPage = 0;
+let synth = window.speechSynthesis;
+let utter = null;
+let maleVoice = null;
+
+function loadVoices() {
+  const voices = synth.getVoices();
+  maleVoice = voices.find(v => /male/i.test(v.name)) || voices[0];
+}
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+loadVoices();
+
+function showPage(index) {
+  if(index < 0 || index >= pages.length) return;
+  pages.forEach(p => p.classList.remove('active'));
+  pages[index].classList.add('active');
+  currentPage = index;
+  speak(pages[index].querySelector('.storyText').innerText);
+}
+
+function speak(text){
+  if('speechSynthesis' in window){
+    if(utter) synth.cancel();
+    utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 0.9;
+    utter.pitch = 1.1;
+    if(maleVoice) utter.voice = maleVoice;
+    synth.speak(utter);
+  }
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight') showPage(currentPage+1);
+  if(e.key==='ArrowLeft') showPage(currentPage-1);
+});
+
+document.getElementById('closeBtn').addEventListener('click', ()=>{
+  if(utter) synth.cancel();
+  window.location.href='/dashboard';
+});
+
+/* Page 5 Connect Signals Game */
+function initSignalGame() {
+  const signals = document.querySelectorAll('#signalGame .signal');
+  const tower = document.getElementById('tower');
+  const successMsg = document.getElementById('successMsg');
+  let connected = 0;
+
+  signals.forEach(sig=>{
+    sig.draggable = true;
+    sig.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text', sig.id); });
+  });
+
+  tower.addEventListener('dragover', e=>{ e.preventDefault(); });
+  tower.addEventListener('drop', e=>{
+    const id = e.dataTransfer.getData('text');
+    const sig = document.getElementById(id);
+    sig.style.top = (tower.offsetTop-20)+'px';
+    sig.style.left = (tower.offsetLeft)+'px';
+    sig.draggable=false;
+    connected++;
+    if(connected===signals.length){
+      successMsg.style.display='block';
+      setTimeout(()=> successMsg.style.display='none',2500);
+    }
+  });
+}
+window.addEventListener('load', initSignalGame);
+
+/* Initialize first page speech */
+window.addEventListener('load', ()=> showPage(0));
+</script>
+</body>
+</html>

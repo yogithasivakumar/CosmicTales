@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cosmic Tales — Sign Up</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #0a1f4f 0%, #1a2a6c 100%);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Subtle stars background */
+    body::before {
+      content: "";
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: radial-gradient(#fff 1px, transparent 1px) repeat;
+      background-size: 2px 2px;
+      z-index: -2;
+      animation: stars 60s linear infinite;
+      opacity: 0.1;
+    }
+    @keyframes stars { from {background-position:0 0;} to {background-position:10000px 10000px;} }
+
+    /* Signup card */
+    .signup-box {
+      background: rgba(10,30,80,0.95);
+      padding: 3rem 2rem;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
+
+    .signup-box h1 {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+    .signup-box p {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 2rem;
+    }
+
+    /* Form styles */
+    form { display: flex; flex-direction: column; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      padding: 0.8rem 1rem;
+      margin-bottom: 1.2rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    input[type="submit"] {
+      padding: 0.8rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      background: #ffd700;
+      color: #1b2a5c;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    input[type="submit"]:hover { background:#ffea70; transform: scale(1.05); }
+
+    .login-link {
+      margin-top: 1rem;
+      color: #ffd700;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+    .login-link:hover { color: #ffea70; }
+
+    /* Responsive */
+    @media(max-width:500px){
+      .signup-box { padding: 2rem 1.5rem; }
+      .signup-box h1 { font-size:1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-box">
+    <h1>Sign Up 🌌</h1>
+    <p>Create your Cosmic Tales account to start your space adventure!</p>
+    <form action="{{ url_for('signup') }}" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="submit" value="Sign Up">
+    </form>
+    <a href="{{ url_for('login') }}" class="login-link">Already have an account? Login</a>
+  </div>
+
+</body>
+</html>

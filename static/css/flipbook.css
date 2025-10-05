@@ -1,0 +1,74 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(to bottom, #a8e6cf, #dcedc1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.flipbook-container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+}
+
+h2 {
+  font-size: 28px;
+  color: #2e7d32;
+  margin-bottom: 15px;
+}
+
+p {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #c8e6c9;
+  border: none;
+  font-size: 26px;
+  padding: 10px 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: #81c784;
+}
+
+#prev { left: 15px; }
+#next { right: 15px; }
+
+.logout-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.logout-btn:hover {
+  background: #d32f2f;
+}

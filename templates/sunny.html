@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sunny the Sun 🌞 Story</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #0a1f4f 0%, #1a2a6c 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    header {
+      width: 100%;
+      max-width: 900px;
+      margin: 1rem auto;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Story Container */
+    #storyContainer {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(10,30,80,0.95);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    /* Story Page */
+    .storyPage {
+      display: none;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .storyPage.active {
+      display: flex;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+
+    .characterName {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+    }
+
+    .storyText {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .interactive {
+      cursor: pointer;
+      margin: 1rem 0;
+    }
+
+    /* Navigation */
+    .navButtons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    .navButtons button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ffd700;
+      color: #1a2a6c;
+      transition: all 0.3s;
+    }
+    .navButtons button:hover {
+      background: #e0c000;
+    }
+
+    /* Animations */
+    .sneeze {
+      animation: sneezeAnim 0.6s forwards;
+    }
+    @keyframes sneezeAnim {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2) rotate(5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .raysWave {
+      animation: waveRays 1s forwards;
+    }
+    @keyframes waveRays {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    .flareZoom {
+      animation: flareZoom 1s forwards;
+    }
+    @keyframes flareZoom {
+      0% { transform: translateX(0) scale(1); opacity:1; }
+      100% { transform: translateX(300px) scale(1.5); opacity:0; }
+    }
+
+    .waveAnimation {
+      animation: waveSun 1s forwards;
+    }
+    @keyframes waveSun {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(15deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sunny the Sun 🌞</h1>
+</header>
+
+<div id="storyContainer">
+
+  <!-- Page 1 -->
+  <div class="storyPage active" data-page="1">
+    <div class="characterName interactive" id="sunClick1">Meet Sunny 🌞</div>
+    <div class="storyText">“Hello, I’m Sunny! I shine every day to make Earth warm and happy. But sometimes… ACHOO! I sneeze big solar flares!”</div>
+    <div class="navButtons">
+      <button id="next1">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="storyPage" data-page="2">
+    <div class="characterName">Sunny Prepares</div>
+    <div class="storyText interactive" id="rays">“Before I sneeze, I like to stretch my rays. Wiggle, wiggle, wiggle!”</div>
+    <div class="navButtons">
+      <button id="prev2">← Prev</button>
+      <button id="next2">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 3 -->
+  <div class="storyPage" data-page="3">
+    <div class="characterName">Solar Flare Launch</div>
+    <div class="storyText interactive" id="flare">“Here it comes! Zoom! My flare travels millions of miles to Earth!”</div>
+    <div class="navButtons">
+      <button id="prev3">← Prev</button>
+      <button id="next3">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 4 -->
+  <div class="storyPage" data-page="4">
+    <div class="characterName">Effects on Earth</div>
+    <div class="storyText interactive" id="effect">“Hmm… it looks like my sneeze is reaching satellites and devices. Oh no!”</div>
+    <div class="navButtons">
+      <button id="prev4">← Prev</button>
+      <button id="next4">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 5 -->
+  <div class="storyPage" data-page="5">
+    <div class="characterName interactive" id="sunClick5">Sunny Explains</div>
+    <div class="storyText">“I’m not mean! Flares are just bursts of energy. Scientists study me to keep everyone safe.”</div>
+    <div class="navButtons">
+      <button id="prev5">← Prev</button>
+      <button id="next5">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 6 -->
+  <div class="storyPage" data-page="6">
+    <div class="characterName">Fun Mini-Game</div>
+    <div class="storyText">“Can you help me sneeze safely? Drag shields or auroras to block flares before they hit Earth!”</div>
+    <div class="navButtons">
+      <button id="prev6">← Prev</button>
+      <button id="next6">Next →</button>
+    </div>
+  </div>
+
+  <!-- Page 7 -->
+  <div class="storyPage" data-page="7">
+    <div class="characterName interactive" id="sunClick7">Goodbye Sunny</div>
+    <div class="storyText">“Thanks for helping me today! Remember, I shine bright every day and sometimes surprise everyone with a sneeze!”</div>
+    <div class="navButtons">
+      <button id="prev7">← Prev</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Navigation
+  function showPage(pageNum) {
+    document.querySelectorAll('.storyPage').forEach(page => {
+      page.classList.remove('active');
+    });
+    document.querySelector(`.storyPage[data-page="${pageNum}"]`).classList.add('active');
+  }
+
+  // Page Buttons
+  document.getElementById('next1').addEventListener('click', ()=> showPage(2));
+  document.getElementById('prev2').addEventListener('click', ()=> showPage(1));
+  document.getElementById('next2').addEventListener('click', ()=> showPage(3));
+  document.getElementById('prev3').addEventListener('click', ()=> showPage(2));
+  document.getElementById('next3').addEventListener('click', ()=> showPage(4));
+  document.getElementById('prev4').addEventListener('click', ()=> showPage(3));
+  document.getElementById('next4').addEventListener('click', ()=> showPage(5));
+  document.getElementById('prev5').addEventListener('click', ()=> showPage(4));
+  document.getElementById('next5').addEventListener('click', ()=> showPage(6));
+  document.getElementById('prev6').addEventListener('click', ()=> showPage(5));
+  document.getElementById('next6').addEventListener('click', ()=> showPage(7));
+  document.getElementById('prev7').addEventListener('click', ()=> showPage(6));
+
+  // Interactions
+  document.getElementById('sunClick1').addEventListener('click', ()=> {
+    document.getElementById('sunClick1').classList.add('sneeze');
+    setTimeout(()=> document.getElementById('sunClick1').classList.remove('sneeze'),600);
+  });
+
+  document.getElementById('rays').addEventListener('click', ()=> {
+    document.getElementById('rays').classList.add('raysWave');
+    setTimeout(()=> document.getElementById('rays').classList.remove('raysWave'),1000);
+  });
+
+  document.getElementById('flare').addEventListener('click', ()=> {
+    document.getElementById('flare').classList.add('flareZoom');
+    setTimeout(()=> document.getElementById('flare').classList.remove('flareZoom'),1000);
+  });
+
+  document.getElementById('effect').addEventListener('click', ()=> {
+    alert("Satellites wobble! Phones freeze!"); // simple interaction demo
+  });
+
+  document.getElementById('sunClick5').addEventListener('click', ()=> {
+    alert("Fun Fact: Solar flares are bursts of radiation from the Sun!");
+  });
+
+  document.getElementById('sunClick7').addEventListener('click', ()=> {
+    document.getElementById('sunClick7').classList.add('waveAnimation');
+    setTimeout(()=> document.getElementById('sunClick7').classList.remove('waveAnimation'),1000);
+  });
+</script>
+
+</body>
+</html>
